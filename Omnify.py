@@ -7,7 +7,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 #Stored variables, to change depending on user
 username = 'omnitenebris'
 scope = 'user-library-read'
-redirectUri = 'http://www.andrewnova.com'
+redirectUri = 'http://www.andrewnovac.com'
 clientId = '25cdc49237b348c297dff633d59bb46f'
 clientSecret = 'bcef5ca156264f7085c788713e8719ec'
 
@@ -34,7 +34,7 @@ seedTracks = ('%2C').join(Tracks[:5])
 r = requests.get("https://api.spotify.com/v1/recommendations?market=CA&seed_tracks=" + seedTracks + "&min_energy=0.4&min_popularity=50",
     headers = {'Content-Type': 'application/json',
         'Accept': 'text/javascript',
-        "Authorization": "Bearer BQCxPIJNDr_HhZEzgijkcy13xt2rWGoh0Qu89hP3QbxlQIrary014SVdtdI_pqfKK0sWfUZNNIKEClwmX7lH6RkLovJGqW1FCuE_MFyCeIwRdjZBQ36BbfJlZMMM9PFXaJvJ4-Uc0QJRjBP4qmxInP9QR2L89RRC3A"})
+        "Authorization": "Bearer BQC6cJ9s2jfPiQ2kAE-4I6DWdNKiKcdO7CF6REvsMnnJgn3eXiYFdhIMm8k8OSq9j2cZPwUTGO_9dv2SQU2l8U65EXVWRbZmQCLQAp7yxywTc3kJRFZ_BcX7bU41dgRawsjeree4ozT6iTAXjDDCZ96y5eNrfAtBYA"})
 
 #Output the recommended tracks
 i = 0
