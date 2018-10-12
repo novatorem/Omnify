@@ -52,7 +52,6 @@ def songs():
             "Authorization": "Bearer " + tokenSong})
     #print(r.text)
 
-
 def statistics():
     tokenStats = util.prompt_for_user_token(username, scope[1],
     client_id= clientId,
@@ -63,7 +62,12 @@ def statistics():
         headers = {'Content-Type': 'application/json',
             'Accept': 'text/javascript',
             "Authorization": "Bearer " + tokenStats})
-    print(r.text)
+    #print(r.text)
+    print("\nSome genres you might like:\n")
+    genres = []
+    for artist in json.loads(r.text)['items']:
+        genres = set(genres) | set(artist['genres'])
+    print("- " + "\n- ".join(sorted(list(genres), key=len)))
 
 #Ask for user input regarding what to do
 print("What would you like to do today?")
