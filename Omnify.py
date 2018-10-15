@@ -2,6 +2,7 @@ import json
 import spotipy
 import requests
 import spotipy.util as util
+from collections import OrderedDict
 from spotipy.oauth2 import SpotifyClientCredentials
 
 #Stored variables, to change depending on user
@@ -11,6 +12,26 @@ redirectUri = 'http://www.andrewnovac.com/journey'
 clientId = '25cdc49237b348c297dff633d59bb46f'
 clientSecret = 'bcef5ca156264f7085c788713e8719ec'
 
+def main():
+    statistics()
+"""
+    #Ask for user input regarding what to do
+    userRespone = input("\nType in your username: ")
+    global username
+    username = userRespone
+    print("\nHi " + username + "! What would you like to do today?\n")
+    while True:
+
+        userRespone = input('Show my spotify statistics or recommend songs for me (stats/songs): ')
+        if userRespone.lower() == "stats":
+            statistics()
+            break
+        elif userRespone.lower() == "songs":
+            songs()
+            break
+        else:
+            print('Please type either "statistics" or "songs"\n')
+"""
 def songs():
     #Get the authorization
     tokenSong = util.prompt_for_user_token(username, scope[0],
@@ -66,18 +87,21 @@ def statistics():
     print("\nSome genres you might like:\n")
     genres = []
     for artist in json.loads(r.text)['items']:
-        genres = set(genres) | set(artist['genres'])
-    print("- " + "\n- ".join(sorted(list(genres), key=len)))
+        genres.extend(artist['genres'])
+        #genres = set(genres) | set(artist['genres'])
+    #print("- " + "\n- ".join(sorted(list(genres), key=len)))
+    print("- " + "\n- ".join(
+        list
+            (dict.fromkeys(
+                sorted(
+                    genres,
+                    key = genres.count,
+                    reverse=True)
+                )
+            )
+        )
+    )
+    
 
-#Ask for user input regarding what to do
-print("What would you like to do today?")
-while True:
-    userRespone = input('Show my spotify statistics or recommend songs for me (stats/songs): ')
-    if userRespone.lower() == "stats":
-        statistics()
-        break
-    elif userRespone.lower() == "songs":
-        songs()
-        break
-    else:
-        print('Please type either "statistics" or "songs"\n')
+if __name__ == "__main__":
+    main()
