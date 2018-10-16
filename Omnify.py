@@ -1,3 +1,4 @@
+import math
 import json
 import spotipy
 import requests
@@ -7,7 +8,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 #Stored variables, to change depending on user
 username = 'omnitenebris'
-scope = ['user-library-read', 'user-top-read']
+scope = 'user-library-read user-top-read'
 redirectUri = 'http://www.andrewnovac.com/journey'
 clientId = '25cdc49237b348c297dff633d59bb46f'
 clientSecret = 'bcef5ca156264f7085c788713e8719ec'
@@ -34,10 +35,10 @@ def main():
 """
 def songs():
     #Get the authorization
-    tokenSong = util.prompt_for_user_token(username, scope[0],
-    client_id= clientId,
-    client_secret = clientSecret,
-    redirect_uri = redirectUri)
+    tokenSong = util.prompt_for_user_token(username, scope,
+        client_id= clientId,
+        client_secret = clientSecret,
+        redirect_uri = redirectUri)
 
     #Get a list of users saved tracks
     sp = spotipy.Spotify(auth=tokenSong)
@@ -73,35 +74,52 @@ def songs():
             "Authorization": "Bearer " + tokenSong})
     #print(r.text)
 
-def statistics():
-    tokenStats = util.prompt_for_user_token(username, scope[1],
+def statistics(genres = True, popularity = True):
+    #Connect to the API
+    tokenStats = util.prompt_for_user_token(username, scope,
     client_id= clientId,
     client_secret = clientSecret,
     redirect_uri = redirectUri)
-
     r = requests.get("https://api.spotify.com/v1/me/top/artists",
         headers = {'Content-Type': 'application/json',
             'Accept': 'text/javascript',
             "Authorization": "Bearer " + tokenStats})
-    #print(r.text)
-    print("\nSome genres you might like:\n")
-    genres = []
-    for artist in json.loads(r.text)['items']:
-        genres.extend(artist['genres'])
-        #genres = set(genres) | set(artist['genres'])
-    #print("- " + "\n- ".join(sorted(list(genres), key=len)))
-    print("- " + "\n- ".join(
-        list
-            (dict.fromkeys(
-                sorted(
-                    genres,
-                    key = genres.count,
-                    reverse=True)
+    
+    #Get popularity of favorite artists
+    if popularity == True:
+        popularity = []
+        followers = []
+        for artist in json.loads(r.text)['items']:
+            popularity.append(artist['popularity'])
+        for artist in json.loads(r.text)['items']:
+            followers.append(artist['followers']['total'])
+        popMeter = int(sum(popularity) / float(len(popularity)))
+        folMeter = int(sum(followers) / float(len(followers)))
+        ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(math.floor(n/10)%10!=1)*(n%10<4)*n%10::4])
+        print("Your favorite artists average in the " + ordinal(popMeter) +
+                " percentile for popularity\nWith an average of " +
+                str(folMeter) + " followers\n")
+
+    #Get users most listened to genres and return them
+    if genres == True:
+        print("Some genres you might like:\n")
+        genres = []
+        for artist in json.loads(r.text)['items']:
+            genres.extend(artist['genres'])
+        userGenres = ("- " + "\n- ".join(
+            list
+                (dict.fromkeys(
+                    sorted(
+                        genres,
+                        key = genres.count,
+                        reverse=True)
+                    )
                 )
             )
         )
-    )
+        print(userGenres.title() + "\n")
     
+    #print(r.text)
 
 if __name__ == "__main__":
     main()
