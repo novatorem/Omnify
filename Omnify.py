@@ -96,13 +96,13 @@ def statistics(genres = True, popularity = True):
         popMeter = int(sum(popularity) / float(len(popularity)))
         folMeter = int(sum(followers) / float(len(followers)))
         ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(math.floor(n/10)%10!=1)*(n%10<4)*n%10::4])
-        print("Your favorite artists average in the " + ordinal(popMeter) +
-                " percentile for popularity\nWith an average of " +
-                str(folMeter) + " followers\n")
+        print("\nYour favorite artists have an average of " + str(folMeter) +
+                " followers\nRanked in the top " +
+                ordinal(popMeter) + " percentile of artists\n")
 
     #Get users most listened to genres and return them
     if genres == True:
-        print("Some genres you might like:\n")
+        print("Your favorite music falls within the following genres:")
         genres = []
         for artist in json.loads(r.text)['items']:
             genres.extend(artist['genres'])
