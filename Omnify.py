@@ -15,6 +15,7 @@ clientSecret = 'bcef5ca156264f7085c788713e8719ec'
 
 def main():
     statistics()
+    songs()
 """
     #Ask for user input regarding what to do
     userRespone = input("\nType in your username: ")
