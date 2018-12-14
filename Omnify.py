@@ -17,21 +17,13 @@ def main():
     userRespone = input("\nType in your username: ")
     global username
     username = userRespone
-    print("\nHi " + username + "! What would you like to do today?\n")
-    while True:
-        userRespone = input('Show my spotify statistics or recommend songs for me (stats/songs): ')
-        if userRespone.lower() == "stats":
-            statistics()
-            break
-        elif userRespone.lower() == "songs":
-            songs()
-            break
-        else:
-            print('Please type either "stats" or "songs"\n')
+    print("\nHi " + username + "!")
+    songs()
+    statistics()
 
 def songs():
     #Get the authorization
-    tokenSong = util.prompt_for_user_token(username, scope,
+    tokenSong = util.prompt_for_user_token('omnitenebris', scope,
         client_id = clientId,
         client_secret = clientSecret,
         redirect_uri = redirectUri)
@@ -62,7 +54,7 @@ def songs():
         track = json.loads(r.text)['tracks'][i]['name']
         artist = json.loads(r.text)['tracks'][i]['artists'][0]['name']
         link = json.loads(r.text)['tracks'][i]['external_urls']['spotify']
-        print('[' + track + " - " + artist + '](' + link + ')')
+        print(track + ' - ' + artist + '\n\t' + link + '\n')
         i += 1
 
     #Send out a request with the album seeds to the spotify API
@@ -75,7 +67,7 @@ def songs():
 
 def statistics(genres = True, popularity = True):
     #Connect to the API
-    tokenStats = util.prompt_for_user_token(username, scope,
+    tokenStats = util.prompt_for_user_token('omnitenebris', scope,
     client_id= clientId,
     client_secret = clientSecret,
     redirect_uri = redirectUri)
@@ -95,9 +87,9 @@ def statistics(genres = True, popularity = True):
         popMeter = int(sum(popularity) / float(len(popularity)))
         folMeter = int(sum(followers) / float(len(followers)))
         ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(math.floor(n/10)%10!=1)*(n%10<4)*n%10::4])
-        print("Your favorite artists have an average of " + str(folMeter) +
+        print("\nYour favorite artists have an average of " + str(folMeter) +
                 " followers\nRanked in the top " +
-                ordinal(popMeter) + " percentile of artists\n")
+                ordinal(popMeter) + " percentile of artists, impressive!\n")
 
     #Get users most listened to genres and return them
     if genres == True:
@@ -105,7 +97,7 @@ def statistics(genres = True, popularity = True):
         genres = []
         for artist in json.loads(r.text)['items']:
             genres.extend(artist['genres'])
-        userGenres = ("- " + "\n- ".join(
+        userGenres = ("\t- " + "\n\t- ".join(
             list
                 (dict.fromkeys(
                     sorted(
@@ -113,7 +105,7 @@ def statistics(genres = True, popularity = True):
                         key = genres.count,
                         reverse=True)
                     )
-                )
+                )[:10]
             )
         )
         print(userGenres.title() + "\n")
