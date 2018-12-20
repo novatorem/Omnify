@@ -19,11 +19,13 @@ def main():
     username = userRespone
     print("\nHi " + username + "!")
     artists()
+    songs()
     recommendations()
 
 def artists(genres = True, artists = True, popularity = True):
     #Connect to the API
-    tokenStats = util.prompt_for_user_token('omnitenebris', scope,
+    global username
+    tokenStats = util.prompt_for_user_token(username, scope,
     client_id= clientId,
     client_secret = clientSecret,
     redirect_uri = redirectUri)
@@ -51,14 +53,14 @@ def artists(genres = True, artists = True, popularity = True):
         artists = []
         for artist in json.loads(r.text)['items']:
             artists.append(artist['name'])
-        print("The following are your top ten artists:")
+        print("\nThe following are your top ten artists:\n")
         for i in range(0, 10):
             print("\t" + str(i + 1) + ". " + artists[i])
         print("")
 
     #Get users most listened to genres and return them
     if genres == True:
-        print("Your favorite music falls within the following genres:")
+        print("\nYour favorite music falls within the following genres:\n")
         genres = []
         for artist in json.loads(r.text)['items']:
             genres.extend(artist['genres'])
@@ -77,9 +79,32 @@ def artists(genres = True, artists = True, popularity = True):
     
     #print(r.text)
 
+def songs(genres = True, artists = True, popularity = True):
+    #Connect to the API
+    global username
+    tokenStats = util.prompt_for_user_token(username, scope,
+    client_id= clientId,
+    client_secret = clientSecret,
+    redirect_uri = redirectUri)
+    r = requests.get("https://api.spotify.com/v1/me/top/tracks",
+        headers = {'Content-Type': 'application/json',
+            'Accept': 'text/javascript',
+            "Authorization": "Bearer " + tokenStats})
+
+    songs = []
+    print('\nYou currently favor the following songs:\n')
+    for song in json.loads(r.text)['items']:
+        name = song['name']
+        artist = song['album']['artists'][0]['name']
+        link = song['external_urls']['spotify']
+        songs.append(name + ' - ' + artist + '\n\t' + str(link) + '\n\n')
+    print("".join(songs[:5]))
+    #print(json.dumps(r.json(), indent = 2))
+
 def recommendations():
     #Get the authorization
-    tokenSong = util.prompt_for_user_token('omnitenebris', scope,
+    global username
+    tokenSong = util.prompt_for_user_token(username, scope,
         client_id = clientId,
         client_secret = clientSecret,
         redirect_uri = redirectUri)
