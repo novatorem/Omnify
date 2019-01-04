@@ -8,7 +8,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 #Stored variables, to change depending on user
 scope = 'user-library-read user-top-read'
-redirectUri = 'http://www.andrewnovac.com/journey'
+redirectUri = 'http://www.andrewnovac.com/site/journey'
 clientId = '25cdc49237b348c297dff633d59bb46f'
 clientSecret = 'bcef5ca156264f7085c788713e8719ec'
 
