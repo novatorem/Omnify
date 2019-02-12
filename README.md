@@ -9,6 +9,3 @@ Go to [this](https://colab.research.google.com/drive/1vAq5ZFhfeA5_SriMAbcXZX11c5
 
 1. Click on the play button on the left
 
-## Development setup
-
-> Coming Soon
